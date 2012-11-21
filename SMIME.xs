@@ -494,12 +494,14 @@ _addPublicKey(Crypt_SMIME this, char* crt)
             OPENSSL_CROAK("Crypt::SMIME#setPublicKey: failed to allocate a buffer");
         }
 
+        ERR_clear_error();
         while (1) {
             X509* pub_cert;
 
             pub_cert = PEM_read_bio_X509_AUX(buf, NULL, NULL, NULL);
             if (pub_cert == NULL) {
-                if (ERR_GET_REASON(ERR_get_error()) == PEM_R_NO_START_LINE) {
+                if (ERR_GET_REASON(ERR_peek_error()) == PEM_R_NO_START_LINE) {
+                    ERR_clear_error();
                     break;
                 }
                 else {
