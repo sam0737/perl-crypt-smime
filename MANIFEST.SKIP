@@ -1,6 +1,9 @@
 ~$
+(^|/)\.
 \.tar\.gz$
 (^|/)\.svn(/|$)
+^\.git(/|$)
+^\.gitignore$
 ^\.hg(/|$)
 ^\.hgignore$
 ^blib(/|$)
