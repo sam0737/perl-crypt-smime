@@ -4,14 +4,25 @@ lib/SMIME/JA.pod
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
+META.yml			Module meta-data (added by MakeMaker)
 openssl_config.PL
 README
 SMIME.mlpod
 SMIME.pl
-SMIME.pod
 SMIME.xs
 t/chained-certs.t
+t/chained.intermed-1.crt
+t/chained.intermed-1.key
+t/chained.intermed-2.crt
+t/chained.intermed-2.key
+t/chained.root.crt
+t/chained.root.key
+t/chained.user.crt
+t/chained.user.key
 t/smime.more.t
 t/smime.t
+t/test.1.crt
+t/test.1.key
+t/test.2.crt
+t/test.2.key
 typemap
-META.yml                                 Module meta-data (added by MakeMaker)

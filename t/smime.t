@@ -5,54 +5,13 @@ use File::Spec;
 use strict;
 use warnings;
 
-BEGIN {
-    use Crypt::SMIME;
-    my $openssl = '/usr/local/ymir/perl/openssl/bin/openssl';
-    if (!-x $openssl) {
-        $openssl = '/usr/bin/openssl';
-    }
-    if(!-x $openssl && -e 'c:/openssl/bin/openssl.exe' )
-    {
-        $openssl = 'c:/openssl/bin/openssl.exe';
-    }
-
-    my $devnull = File::Spec->devnull();
-    open(FILE, "> tmp-$$.config") or die $!;
-    print FILE<<'CONFIG';
-[ req ]
-distinguished_name     = req_distinguished_name
-attributes             = req_attributes
-prompt                 = no
-[ req_distinguished_name ]
-C                      = AU
-ST                     = Some-State
-L                      = Test Locality
-O                      = Organization Name
-OU                     = Organizational Unit Name
-CN                     = Common Name
-emailAddress           = test@email.address
-[ req_attributes ]
-CONFIG
-    close(FILE);
-    foreach my $i (1 .. 2) {
-	system(qq{$openssl genrsa > tmp-$$-$i.key 2>$devnull}) and die $!;
-        system(qq{$openssl req -new -key tmp-$$-$i.key -out tmp-$$-$i.csr -config tmp-$$.config >$devnull}) and die $!;
-	system(qq{$openssl x509 -in tmp-$$-$i.csr -out tmp-$$-$i.crt -req -signkey tmp-$$-$i.key -set_serial $i 2>$devnull >$devnull}) and die $!;
-    }
-}
-
-END {
-    foreach my $i (1 .. 2) {
-	unlink "tmp-$$-$i.key", "tmp-$$-$i.csr", "tmp-$$-$i.crt";
-    }
-    unlink("tmp-$$.config");
-}
+use Crypt::SMIME;
 
 sub key {
     my $i = shift;
 
     local $/ = undef;
-    open my $fh, '<', "tmp-$$-$i.key";
+    open my $fh, '<', "t/test.$i.key";
     <$fh>;
 }
 
@@ -60,7 +19,7 @@ sub crt {
     my $i = shift;
 
     local $/ = undef;
-    open my $fh, '<', "tmp-$$-$i.crt";
+    open my $fh, '<', "t/test.$i.crt";
     <$fh>;
 }
 
@@ -119,3 +78,33 @@ $smime->setPrivateKey(key(2), crt(2));
 ok($decrypted = $smime->decrypt($encrypted), 'decrypt (by recipient\'s key)');
 
 1;
+
+__END__
+
+Certificates and Keys were prepared as followed:
+
+test.cfg
+----------------
+[ req ]
+distinguished_name     = req_distinguished_name
+attributes             = req_attributes
+prompt                 = no
+[ req_distinguished_name ]
+C                      = AU
+ST                     = Some-State
+L                      = Test Locality
+O                      = Organization Name
+OU                     = Organizational Unit Name
+CN                     = Common Name
+emailAddress           = test@email.address
+[ req_attributes ]
+----------------
+
+openssl genrsa -out test.1.key
+openssl req -new -key test.1.key -out test.1.csr -config test.cfg
+openssl x509 -in test.1.csr -out test.2.crt -req-signkey test.1.key
+
+openssl genrsa -out test.2.key
+openssl req -new -key test.2.key -out test.2.csr -config test.cfg
+openssl x509 -in test.2.csr -out test.2.crt -req-signkey test.2.key
+
