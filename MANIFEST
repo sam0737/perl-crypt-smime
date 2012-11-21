@@ -1,0 +1,17 @@
+Changes
+lib/SMIME.pm
+lib/SMIME/JA.pod
+Makefile.PL
+MANIFEST			This list of files
+MANIFEST.SKIP
+openssl_config.PL
+README
+SMIME.mlpod
+SMIME.pl
+SMIME.pod
+SMIME.xs
+t/chained-certs.t
+t/smime.more.t
+t/smime.t
+typemap
+META.yml                                 Module meta-data (added by MakeMaker)

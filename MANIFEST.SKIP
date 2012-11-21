@@ -1,0 +1,14 @@
+~$
+\.tar\.gz$
+(^|/)\.svn(/|$)
+^\.hg(/|$)
+^\.hgignore$
+^blib(/|$)
+^Makefile$
+^Makefile\.old$
+^MANIFEST\.bak$
+^MEMO\.txt$
+^pm_to_blib$
+^SMIME\.bs$
+^SMIME\.c$
+^SMIME\.o$

@@ -1,0 +1,153 @@
+=encoding utf-8
+
+=head1 NAME
+
+Crypt::SMIME::JA - S/MIMEの署名、検証、暗号化、復号化
+
+=head1 概要
+
+  use Crypt::SMIME;
+  
+  my $plain = <<'EOF';
+  From: alice@example.org
+  To: bob@example.com
+  Subject: Crypt::SMIME test
+  
+  This is a test mail. Please ignore...
+  EOF
+  
+  my $smime = Crypt::SMIME->new();
+  $smime->setPrivateKey($privkey, $crt);
+  # $smime->setPublicKey([$icacert]); # if need be.
+  
+  my $signed = $smime->sign($plain);
+  print $signed;
+
+=head1 説明
+
+S/MIMEの署名、検証、暗号化、復号化を行うクラス。
+libcrypto (L<http://www.openssl.org>) が必要。
+
+=head2 メソッド
+
+=over 4
+
+=item new()
+
+  my $smime = Crypt::SMIME->new();
+
+引数無し
+
+=item setPrivateKey()
+
+  $smime->setPrivateKey($key, $crt);
+  $smime->setPrivateKey($key, $crt, $password);
+
+秘密鍵を設定する。ここで設定された秘密鍵は署名と復号化の際に用いられる。
+ファイル名ではなく、鍵本体を渡す。
+
+対応しているフォーマットは PEM のみ。鍵の読み込みに失敗した場合はdieする。
+
+=item setPublicKey()
+
+  $smime->setPublicKey($crt);
+  $smime->setPublicKey([$crt1, $crt2, ...]);
+
+公開鍵を設定する。ここで設定された公開鍵は署名への添付、署名の検証、
+そして暗号化の際に用いられる。
+
+対応しているフォーマットは PEM のみ。鍵の読み込みに失敗した場合はdieする。
+
+=item sign()
+
+  $signed_mime = $smime->sign($raw_mime);
+
+署名を行い、MIMEメッセージを返す。可能な署名はクリア署名のみ。
+
+C<Content-*>, C<MIME-*> 及び C<Subject> を除いたヘッダは
+multipartのトップレベルに移される。
+C<Subject> はS/MIMEを認識できないメーラのために, multipartの
+トップレベルと保護されるメッセージの両側に配置される。
+
+=item signonly()
+
+  $sign = $smime->signonly($prepared_mime);
+
+署名の計算を行う。
+C<$sign> はBASE64でエンコードされて返る。
+C<$prepared_mime> には, L</prepareSmimeMessage> で返される値を渡す。
+
+=item prepareSmimeMessage()
+
+  ($prepared_mime, $outer_header)
+      = $smime->prepareSmimeMessage($source_mime);
+
+署名用のメッセージを準備する。
+C<$prepared_mime> には著名用に修正されたMIMEメッセージを返す。
+C<$outer_header> は、S/MIMEの外側に付与するヘッダを返す。
+
+C<$prepared_mime> の本文はC<$source_mime>と同じ物となるが、
+ヘッダに関してはC<Content-*>, C<MIME-*>, C<Subject> を除く全てが
+取り除かれる。取り除かれたヘッダは C<$outer_header> に返される。
+S/MIMEメッセージを構築する際にはこれをS/MIMEメッセージのヘッダに追加する。
+C<Subject> ヘッダのみは C<$prepared_mime> と C<$outer_header> の両方に
+現れる点に注意。
+
+=item check()
+
+  $source_mime = $smime->check($signed_mime);
+
+検証を行う。検証に失敗した場合はその理由と共にdieする。
+
+=item encrypt()
+
+  $encrypted_mime = $smime->encrypt($raw_mime);
+
+暗号化を行う。
+
+C<Content-*>, C<MIME-*> 及び C<Subject> を除いたヘッダは
+multipartのトップレベルにコピーされる。
+C<Subject> はS/MIMEを認識できないメーラのために, multipartの
+トップレベルと保護されるメッセージの両側に配置される。
+
+=item decrypt()
+
+  $decrypted_mime = $smime->decrypt($encrypted_mime);
+
+復号化を行う。復号化に失敗した場合はその理由と共にdieする。
+
+=item isSigned()
+
+  $is_signed = $smime->isSigned($mime);
+
+渡されたMIMEメッセージがS/MIMEで署名されたものなら真を返す。
+クリア署名かどうかは問わない。
+署名後に暗号化したメッセージを渡した場合は、署名が直接見えない為、
+偽を返す事に注意。
+
+=item isEncrypted()
+
+  $is_encrypted = $smime->isEncrypted($mime);
+
+渡されたMIMEメッセージがS/MIMEで暗号化されたものなら真を返す。
+暗号化後に署名したメッセージを渡した場合は、暗号文が直接見えない為、
+偽を返す事に注意。
+
+=back
+
+=head1 著者
+
+Copyright 2006-2007 YMIRLINK Inc. All Rights Reserved.
+
+
+This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself
+
+
+Bug reports and comments to: tl@tripletail.jp
+
+
+=for comment
+Local Variables:
+mode: cperl
+End:
+
