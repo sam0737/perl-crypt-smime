@@ -26,24 +26,37 @@ WriteMakefile(
         'lib/SMIME.pm'     => '$(INST_LIBDIR)/SMIME.pm',
         'lib/SMIME/JA.pod' => '$(INST_LIBDIR)/SMIME/JA.pod',
     },
-    depend              => {
-        'lib/SMIME.pm'
-          => "SMIME.pl SMIME.pod\n" .
-	         "\tmkdir -p lib\n" .
-                 "\tcat SMIME.pl  >  \$\@\n" .
-                 "\techo          >> \$\@\n" .
-                 "\techo __END__  >> \$\@\n" .
-                 "\techo          >> \$\@\n" .
-                 "\tcat SMIME.pod >> \$\@\n",
-        
-        'SMIME.pod'
-          => "SMIME.mlpod\n" .
-                 "\tmlpod2pod \$< > \$\@",
+    (
+        $^O eq 'MSWin32' ? (
+            # Windows does not have the right tool (mlpod2pod)
+            depend              => {
+                'lib/SMIME.pm' => 
+                    "SMIME.pl\n" .
+                     "\tmkdir lib\n" .
+                     "\tcopy SMIME.pl \$\@\n",
+            }
+        ) :
+        (
+            depend              => {
+                'lib/SMIME.pm'
+                  => "SMIME.pl SMIME.pod\n" .
+                     "\tmkdir -p lib\n" .
+                         "\tcat SMIME.pl  >  \$\@\n" .
+                         "\techo          >> \$\@\n" .
+                         "\techo __END__  >> \$\@\n" .
+                         "\techo          >> \$\@\n" .
+                         "\tcat SMIME.pod >> \$\@\n",
+                
+                'SMIME.pod'
+                  => "SMIME.mlpod\n" .
+                         "\tmlpod2pod \$< > \$\@",
 
-        'lib/SMIME/JA.pod'
-          => "SMIME.mlpod\n" .
-	         "\tmkdir -p lib/SMIME\n" .
-                 "\tmlpod2pod --langs=ja \$< | perl -pe 's/(\\xe5\\x90\\x8d\\xe5\\x89\\x8d)/NAME/' > \$\@",
-    },
+                'lib/SMIME/JA.pod'
+                  => "SMIME.mlpod\n" .
+                     "\tmkdir -p lib/SMIME\n" .
+                         "\tmlpod2pod --langs=ja \$< | perl -pe 's/(\\xe5\\x90\\x8d\\xe5\\x89\\x8d)/NAME/' > \$\@",
+            }
+        )
+    )
 );
 

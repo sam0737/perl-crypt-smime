@@ -42,6 +42,11 @@ sub _openssl_config_win32
       $OPENSSL->{LIBS}   .= " -L$openssl_path/lib -lssleay32 -llibeay32";
     }
     return;
+  } else
+  {
+    # openssl folder is not found, but might be the library is in the PATH 
+    # (as in the case for Strawberry Perl)
+    $OPENSSL->{LIBS}   .= " -lssleay32 -llibeay32";
   }
 }
 
