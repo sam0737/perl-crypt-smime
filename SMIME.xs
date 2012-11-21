@@ -320,16 +320,6 @@ static SV* _decrypt(Crypt_SMIME this, char* encrypted_mime) {
     return result;
 }
 
-static void seed_rng() {
-    RAND_poll();
-
-    while (RAND_status() == 0) {
-	long seed = random();
-	RAND_seed(&seed, sizeof(long));
-    }
-}
-
-
 MODULE = Crypt::SMIME  PACKAGE = Crypt::SMIME
 
 void
@@ -338,7 +328,6 @@ _init(char* /*CLASS*/)
         /* libcryptoの初期化 */
         ERR_load_crypto_strings();
         SSLeay_add_all_algorithms();
-        seed_rng();
 
 Crypt_SMIME
 new(char* /*CLASS*/)
