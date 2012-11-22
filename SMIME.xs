@@ -216,8 +216,15 @@ static SV* check(Crypt_SMIME this, char* signed_mime) {
 	PKCS7_free(sign);
 	return NULL;
     }
-
+    
+    // The public certs could be a CA (or self-signed CA cert)
     err = PKCS7_verify(sign, NULL, this->pubkeys_store, detached, outbuf, flags);
+    if (err <= 0) {
+        ERR_clear_error();
+        // ...and could be an end user cert. 
+        // And the content might not have the cert embedded.
+        err = PKCS7_verify(sign, this->pubkeys_stack, NULL, detached, outbuf, PKCS7_NOINTERN | PKCS7_NOVERIFY);
+    }
     PKCS7_free(sign);
     
     if (detached != NULL) {

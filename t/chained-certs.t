@@ -75,7 +75,7 @@ do {
 
 __END__
 
-Certificates and Keys were prepared as followed:
+Certificates and Keys were prepared as follow:
 
 ###################
 ### CA
