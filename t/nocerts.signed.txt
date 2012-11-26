@@ -1,0 +1,33 @@
+MIME-Version: 1.0
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha1"; boundary="----6167AE74BA7BECDDC6ECC6E4C0DFE956"
+
+This is an S/MIME signed message
+
+------6167AE74BA7BECDDC6ECC6E4C0DFE956
+Content-type: text/plain
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat.
+
+------6167AE74BA7BECDDC6ECC6E4C0DFE956
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+
+MIICNQYJKoZIhvcNAQcCoIICJjCCAiICAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3
+DQEHATGCAgEwggH9AgEBMIHAMIGyMQswCQYDVQQGEwJBVTETMBEGA1UECBMKU29t
+ZS1TdGF0ZTEWMBQGA1UEBxMNVGVzdCBMb2NhbGl0eTEaMBgGA1UEChMRT3JnYW5p
+emF0aW9uIE5hbWUxITAfBgNVBAsTGE9yZ2FuaXphdGlvbmFsIFVuaXQgTmFtZTEU
+MBIGA1UEAxMLQ29tbW9uIE5hbWUxITAfBgkqhkiG9w0BCQEWEnRlc3RAZW1haWwu
+YWRkcmVzcwIJANnmrdDakoYTMAkGBSsOAwIaBQCggdgwGAYJKoZIhvcNAQkDMQsG
+CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIxMTIyMDgyNDMzWjAjBgkqhkiG
+9w0BCQQxFgQUJ50pcdL9WrunD0wFTexASfGAPYMweQYJKoZIhvcNAQkPMWwwajAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0D
+BzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
+hvcNAwICASgwDQYJKoZIhvcNAQEBBQAEQDZJxHMQN5hxqiiho3PaTUWD/bVMptUX
+LB05HXrOMkkgkxzK9X8cnUfP70AZzAA7J7SoGjU7fWIo5irLKYzaJBY=
+
+------6167AE74BA7BECDDC6ECC6E4C0DFE956--
+
