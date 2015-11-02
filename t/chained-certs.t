@@ -28,16 +28,16 @@ use_ok('Crypt::SMIME');
 
 sub key {
     my $who = shift;
-    local $/;
+    local $/ = undef;
     open my $fh, '<', "t/chained.$who.key" or die $!;
-    return scalar <$fh>;
+    <$fh>;
 };
 
 sub crt {
     my $who = shift;
-    local $/;
+    local $/ = undef;
     open my $fh, '<', "t/chained.$who.crt" or die $!;
-    return scalar <$fh>;
+    <$fh>;
 }
 
 my $plain = q{From: alice@example.org
@@ -101,7 +101,7 @@ basicConstraints       = CA:true
 
 openssl genrsa > chained.root.key
 openssl req -new -key chained.root.key -out chained.root.csr -config chained.root.cfg
-openssl x509 -in chained.root.csr -out chained.root.crt -req -signkey chained.root.key -set_serial 1 -extfile chained.root.cfg -extensions v3_ca
+openssl x509 -in chained.root.csr -out chained.root.crt -req -signkey chained.root.key -set_serial 1 -extfile chained.root.cfg -extensions v3_ca -days 72000
 
 ###################
 ### Intermediate 1
@@ -127,7 +127,7 @@ basicConstraints       = CA:true
 
 openssl genrsa > chained.intermed-1.key
 openssl req -new -key chained.intermed-1.key -out chained.intermed-1.csr -config chained.intermed-1.cfg
-openssl x509 -in chained.intermed-1.csr -out chained.intermed-1.crt -req -CA chained.root.crt -CAkey chained.root.key -set_serial 1 -extfile chained.root.cfg -extensions v3_ca
+openssl x509 -in chained.intermed-1.csr -out chained.intermed-1.crt -req -CA chained.root.crt -CAkey chained.root.key -set_serial 1 -extfile chained.root.cfg -extensions v3_ca -days 72000
 
 ###################
 ### Intermediate 2
@@ -153,7 +153,7 @@ basicConstraints       = CA:true
 
 openssl genrsa > chained.intermed-2.key
 openssl req -new -key chained.intermed-2.key -out chained.intermed-2.csr -config chained.intermed-2.cfg
-openssl x509 -in chained.intermed-2.csr -out chained.intermed-2.crt -req -CA chained.intermed-1.crt -CAkey chained.intermed-1.key -set_serial 1 -extfile chained.root.cfg -extensions v3_c
+openssl x509 -in chained.intermed-2.csr -out chained.intermed-2.crt -req -CA chained.intermed-1.crt -CAkey chained.intermed-1.key -set_serial 1 -extfile chained.root.cfg -extensions v3_ca -days 72000
 
 ###################
 ### End User
@@ -176,5 +176,5 @@ CN                     = USER
 
 openssl genrsa > chained.user.key
 openssl req -new -key chained.user.key -out chained.user.csr -config chained.user.cfg
-openssl x509 -in chained.user.csr -out chained.user.crt -req -CA chained.intermed-2.crt -CAkey chained.intermed-2.key -set_serial 1
+openssl x509 -in chained.user.csr -out chained.user.crt -req -CA chained.intermed-2.crt -CAkey chained.intermed-2.key -set_serial 1 -days 72000
 
